@@ -5,4 +5,7 @@ import (
 )
 
 //go:embed combined-with-oceans.pb
-var Data []byte
+var FullData []byte
+
+//go:embed combined-with-oceans.reduce.pb
+var LiteData []byte
