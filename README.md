@@ -13,6 +13,7 @@
    # stage
    git add combined-with-oceans.pb
    git add combined-with-oceans.reduce.pb
+   git add combined-with-oceans.reduce.compress.pb
    # commit
    git commit -m "bump to xxx"
    git push
