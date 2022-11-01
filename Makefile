@@ -1,4 +1,6 @@
 download:
+	rm *.zip
+	rm *.json
 	wget https://github.com/evansiroky/timezone-boundary-builder/releases/latest/download/timezones-with-oceans.geojson.zip
 	unzip timezones-with-oceans.geojson.zip
 
