@@ -13,7 +13,3 @@ pub fn load_compressed() -> Vec<u8> {
 pub fn load_preindex() -> Vec<u8> {
     include_bytes!("../combined-with-oceans.reduce.preindex.pb").to_vec()
 }
-
-fn main() {
-    println!("Hello, world!");
-}
