@@ -17,6 +17,8 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - uses: actions/checkout@v3
+      - name: Delete files not for Rust
+        run: rm combined-with-oceans.pb
       - name: Setup | Rust
         uses: ATiltedTree/setup-rust@v1
         with:
