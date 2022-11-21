@@ -21,8 +21,15 @@
 
 ## Refer
 
-- Probuf Data define: <https://github.com/ringsaturn/tzf/blob/main/pb/tzinfo.proto>
+- Protocol Buffers define: <https://github.com/ringsaturn/tzf/blob/main/pb/tzinfo.proto>
 - Maintain tools
-  - [`reducePolygon`](https://github.com/ringsaturn/tzf/tree/main/cmd/reducePolygon)
-  - [`tzjson2pb`](https://github.com/ringsaturn/tzf/tree/main/cmd/tzjson2pb)
+  - [`geojson2tzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/geojson2tzpb)
+  - [`reducetzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/reducetzpb)
+  - [`compresstzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/compresstzpb)
+  - [`preindextzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/preindextzpb)
 - To view data in GeoJSON format(which is more convenient to show on map), see <https://github.com/ringsaturn/tzf-server>
+
+Usage:
+
+- Go: <https://github.com/ringsaturn/tzf>
+- Rust: <https://github.com/ringsaturn/tzf-rs>
