@@ -1,6 +1,6 @@
 [package]
 name = "tzf-rel"
-version = "0.0.2022-f5"
+version = "0.0.2022-g"
 edition = "2021"
 license-file = "LICENSE"
 description = "Probuf based binary timezone data distribution for tzf-rs"
