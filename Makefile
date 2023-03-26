@@ -1,7 +1,7 @@
 download:
 	rm *.zip
 	rm *.json
-	wget https://github.com/evansiroky/timezone-boundary-builder/releases/latest/download/timezones-with-oceans.geojson.zip
+	wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/${TIMEZONE_BOUNDARY_VERSION}/timezones-with-oceans.geojson.zip
 	unzip timezones-with-oceans.geojson.zip
 
 install:
@@ -13,3 +13,8 @@ install:
 gen: install download
 	geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
 	preindextzpb combined-with-oceans.reduce.pb
+	git add combined-with-oceans.pb
+	git add combined-with-oceans.reduce.pb
+	git add combined-with-oceans.reduce.compress.pb
+	git add combined-with-oceans.reduce.preindex.pb
+	git commit -m "bump to ${TIMEZONE_BOUNDARY_VERSION}"
