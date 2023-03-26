@@ -5,14 +5,6 @@
 ```bash
 export TIMEZONE_BOUNDARY_VERSION=2023b
 make gen
-# stage
-git add combined-with-oceans.pb
-git add combined-with-oceans.reduce.pb
-git add combined-with-oceans.reduce.compress.pb
-git add combined-with-oceans.reduce.preindex.pb
-# commit
-git commit -m "bump to xxx"
-git push
 ```
 
 ## Refer
