@@ -1,0 +1,54 @@
+name: build-tzpb
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-tzpb-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+
+      - name: Install tool
+        run: |
+          go install github.com/ringsaturn/tzf/cmd/checkboundaryrelease@afde55199e728a8c662c96a3898160fde2589319
+          go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@afde55199e728a8c662c96a3898160fde2589319
+          go install github.com/ringsaturn/tzf/cmd/reducetzpb@afde55199e728a8c662c96a3898160fde2589319
+          go install github.com/ringsaturn/tzf/cmd/compresstzpb@afde55199e728a8c662c96a3898160fde2589319
+          go install github.com/ringsaturn/tzf/cmd/preindextzpb@afde55199e728a8c662c96a3898160fde2589319
+
+      - name: Try make new data
+        run: |
+          checkboundaryrelease -verbose=true
+
+          set -e
+
+          eval `checkboundaryrelease`
+
+          echo "${!TIMEZONE_BOUNDARY_VERSION}"
+
+          if [ -z "${TIMEZONE_BOUNDARY_VERSION}" ] ; then echo "No need to gen!" ; exit 1 ; fi
+
+          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$(TIMEZONE_BOUNDARY_VERSION)/timezones-with-oceans.geojson.zip
+          unzip timezones-with-oceans.geojson.zip
+
+          geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
+          preindextzpb combined-with-oceans.reduce.pb
+          git checkout -b bump-$(TIMEZONE_BOUNDARY_VERSION)
+          git add combined-with-oceans.pb
+          git add combined-with-oceans.reduce.pb
+          git add combined-with-oceans.reduce.compress.pb
+          git add combined-with-oceans.reduce.preindex.pb
+          git commit -m "bump to $(TIMEZONE_BOUNDARY_VERSION)"
+          git push --set-upstream origin $(git_current_branch)
