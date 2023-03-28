@@ -64,5 +64,14 @@ jobs:
           git add combined-with-oceans.reduce.pb
           git add combined-with-oceans.reduce.compress.pb
           git add combined-with-oceans.reduce.preindex.pb
+
+          git config --global user.name "tzf-auto-build-bot"
+          git config --global user.email "ringsaturn@users.noreply.github.com"
           git commit -m "bump to $TIMEZONE_BOUNDARY_VERSION"
           git push --set-upstream origin $(git_current_branch)
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tzpb"
+          path: "./*.pb"
