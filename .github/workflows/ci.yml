@@ -31,21 +31,24 @@ jobs:
       - name: Fetch tag
         id: set-latest-version
         run: |
-          checkboundaryrelease -verbose=true
-          echo TIMEZONE_BOUNDARY_VERSION=checkboundaryrelease >> $GITHUB_ENV
+          checkboundaryrelease >> $GITHUB_OUTPUT
 
-      - name: "Check if continue"
-        if: $(TIMEZONE_BOUNDARY_VERSION) == ''
+      - name: Set env
+        run: |
+          echo TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }} >> $GITHUB_ENV
+
+      - name: Check if continue
+        if: ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }} == ""
         run: |
           echo "No need to gen!"
           exit 1
 
-      - name: "Download"
+      - name: Download
         run: |
           wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$(TIMEZONE_BOUNDARY_VERSION)/timezones-with-oceans.geojson.zip
           unzip timezones-with-oceans.geojson.zip
 
-      - name: "Produce"
+      - name: Produce
         run: |
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
