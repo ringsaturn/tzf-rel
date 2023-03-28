@@ -34,17 +34,19 @@ jobs:
       - name: Check if continue
         shell: bash
         run: |
-          if [ "$SECRET" == "" ]; then
+          if [ "$TIMEZONE_BOUNDARY_VERSION" == "" ]; then
             echo "No need to gen!"
             exit 1
           fi
 
       - name: Download
+        shell: bash
         run: |
-          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$(TIMEZONE_BOUNDARY_VERSION)/timezones-with-oceans.geojson.zip
+          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$TIMEZONE_BOUNDARY_VERSION/timezones-with-oceans.geojson.zip
           unzip timezones-with-oceans.geojson.zip
 
       - name: Produce
+        shell: bash
         run: |
           go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@afde55199e728a8c662c96a3898160fde2589319
           go install github.com/ringsaturn/tzf/cmd/reducetzpb@afde55199e728a8c662c96a3898160fde2589319
@@ -55,11 +57,12 @@ jobs:
           preindextzpb combined-with-oceans.reduce.pb
 
       - name: "Commit"
+        shell: bash
         run: |
-          git checkout -b bump-$(TIMEZONE_BOUNDARY_VERSION)
+          git checkout -b bump-$TIMEZONE_BOUNDARY_VERSION
           git add combined-with-oceans.pb
           git add combined-with-oceans.reduce.pb
           git add combined-with-oceans.reduce.compress.pb
           git add combined-with-oceans.reduce.preindex.pb
-          git commit -m "bump to $(TIMEZONE_BOUNDARY_VERSION)"
+          git commit -m "bump to $TIMEZONE_BOUNDARY_VERSION"
           git push --set-upstream origin $(git_current_branch)
