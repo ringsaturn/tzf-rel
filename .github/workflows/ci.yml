@@ -32,29 +32,26 @@ jobs:
         id: set-latest-version
         run: |
           checkboundaryrelease -verbose=true
-          checkboundaryrelease >> $GITHUB_OUTPUT
+          echo TIMEZONE_BOUNDARY_VERSION=checkboundaryrelease >> $GITHUB_ENV
 
       - name: "Check if continue"
-        if: (steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION == '')
+        if: (${{ env.TIMEZONE_BOUNDARY_VERSION }} == '')
         run: |
           echo "No need to gen!"
           exit 1
 
       - name: "Download"
         run: |
-          export TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
           wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$(TIMEZONE_BOUNDARY_VERSION)/timezones-with-oceans.geojson.zip
           unzip timezones-with-oceans.geojson.zip
 
       - name: "Produce"
         run: |
-          export TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
 
       - name: "Commit"
         run: |
-          export TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
           git checkout -b bump-$(TIMEZONE_BOUNDARY_VERSION)
           git add combined-with-oceans.pb
           git add combined-with-oceans.reduce.pb
