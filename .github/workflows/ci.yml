@@ -35,11 +35,14 @@ jobs:
           checkboundaryrelease >> $GITHUB_OUTPUT
 
       - name: "Check if continue"
-        run: if [ -z "${TIMEZONE_BOUNDARY_VERSION}" ] ; then echo "No need to gen!" ; exit 1 ; fi
+        run: |
+          export ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
+          if [ -z "${TIMEZONE_BOUNDARY_VERSION}" ] ; then echo "No need to gen!" ; exit 1 ; fi
 
       - name: "Download"
         run: |
-          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}/timezones-with-oceans.geojson.zip
+          export ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
+          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$(TIMEZONE_BOUNDARY_VERSION)/timezones-with-oceans.geojson.zip
           unzip timezones-with-oceans.geojson.zip
 
       - name: "Produce"
