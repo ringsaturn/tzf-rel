@@ -35,9 +35,10 @@ jobs:
           checkboundaryrelease >> $GITHUB_OUTPUT
 
       - name: "Check if continue"
+        if: (steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION == '')
         run: |
-          export ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
-          if [ -z "${TIMEZONE_BOUNDARY_VERSION}" ] ; then echo "No need to gen!" ; exit 1 ; fi
+          echo "No need to gen!"
+          exit 1
 
       - name: "Download"
         run: |
