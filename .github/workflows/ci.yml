@@ -29,22 +29,23 @@ jobs:
           go install github.com/ringsaturn/tzf/cmd/preindextzpb@afde55199e728a8c662c96a3898160fde2589319
 
       - name: Try make new data
+        id: set-latest-version
         run: |
           checkboundaryrelease -verbose=true
+          checkboundaryrelease >> $GITHUB_OUTPUT
 
-          set -e
-
-          eval `checkboundaryrelease`
-
-          echo "${!TIMEZONE_BOUNDARY_VERSION}"
-
-          if [ -z "${TIMEZONE_BOUNDARY_VERSION}" ] ; then echo "No need to gen!" ; exit 1 ; fi
-
-          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$(TIMEZONE_BOUNDARY_VERSION)/timezones-with-oceans.geojson.zip
+      - name: "Download"
+        run: |
+          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}/timezones-with-oceans.geojson.zip
           unzip timezones-with-oceans.geojson.zip
 
+      - name: "Produce"
+        run: |
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
+
+      - name: "Commit"
+        run: |
           git checkout -b bump-$(TIMEZONE_BOUNDARY_VERSION)
           git add combined-with-oceans.pb
           git add combined-with-oceans.reduce.pb
