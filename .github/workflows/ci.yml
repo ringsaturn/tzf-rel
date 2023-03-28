@@ -32,7 +32,7 @@ jobs:
           echo TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }} >> $GITHUB_ENV
 
       - name: Check if continue
-        if: ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }} == ""
+        if: ${{ env.TIMEZONE_BOUNDARY_VERSION }} == ""
         run: |
           echo "No need to gen!"
           exit 1
