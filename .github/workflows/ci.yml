@@ -1,10 +1,6 @@
 name: build-tzpb
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   schedule:
     - cron: "1 * * * *"
   workflow_dispatch:
@@ -83,6 +79,5 @@ jobs:
 
       - name: "Push Commit"
         shell: bash
-        if: ${{ github.ref_name == 'main' }}
         run: |
           git push --set-upstream origin bump-$TIMEZONE_BOUNDARY_VERSION
