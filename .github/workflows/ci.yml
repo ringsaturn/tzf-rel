@@ -41,11 +41,13 @@ jobs:
 
       - name: "Produce"
         run: |
+          export ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
 
       - name: "Commit"
         run: |
+          export ${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}
           git checkout -b bump-$(TIMEZONE_BOUNDARY_VERSION)
           git add combined-with-oceans.pb
           git add combined-with-oceans.reduce.pb
