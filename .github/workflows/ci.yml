@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "1 * * * *"
 
 jobs:
   build-tzpb-pipeline:
@@ -56,6 +58,12 @@ jobs:
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
 
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tzpb"
+          path: "./*.pb"
+
       - name: "Commit"
         shell: bash
         run: |
@@ -68,10 +76,4 @@ jobs:
           git config --global user.name "tzf-auto-build-bot"
           git config --global user.email "ringsaturn@users.noreply.github.com"
           git commit -m "bump to $TIMEZONE_BOUNDARY_VERSION"
-          git push --set-upstream origin $(git_current_branch)
-
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: "tzpb"
-          path: "./*.pb"
+          git push --set-upstream origin bump-$TIMEZONE_BOUNDARY_VERSION
