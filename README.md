@@ -2,9 +2,39 @@
 
 ## Update Data Steps
 
+Data build in [Actions](.github/workflows/ci.yml).
+
+### Local build
+
+1. Install CLI tool
+
+```bash
+# install tools
+go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@latest
+go install github.com/ringsaturn/tzf/cmd/reducetzpb@latest
+go install github.com/ringsaturn/tzf/cmd/compresstzpb@latest
+go install github.com/ringsaturn/tzf/cmd/preindextzpb@latest
+```
+
+2. Set data version to build(Below steps need this environment var)
+
 ```bash
 export TIMEZONE_BOUNDARY_VERSION=2023b
-make gen
+```
+
+3. Download data
+
+```bash
+# download data
+wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/${TIMEZONE_BOUNDARY_VERSION}/timezones-with-oceans.geojson.zip
+unzip timezones-with-oceans.geojson.zip
+```
+
+4. Make data
+
+```bash
+geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
+preindextzpb combined-with-oceans.reduce.pb
 ```
 
 ## Refer
@@ -12,6 +42,7 @@ make gen
 - Protocol Buffers define:
   <https://github.com/ringsaturn/tzf/blob/main/pb/tzinfo.proto>
 - Maintain tools
+  - [`checkboundaryrelease`](https://github.com/ringsaturn/tzf/tree/main/cmd/checkboundaryrelease)
   - [`geojson2tzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/geojson2tzpb)
   - [`reducetzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/reducetzpb)
   - [`compresstzpb`](https://github.com/ringsaturn/tzf/tree/main/cmd/compresstzpb)
