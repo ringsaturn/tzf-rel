@@ -9,6 +9,9 @@ on:
     - cron: "1 * * * *"
   workflow_dispatch:
 
+env:
+  TZF_CLI_TOOL_VERSION: "v0.13.1-rc1"
+
 jobs:
   build-tzpb-pipeline:
     runs-on: ubuntu-latest
@@ -26,7 +29,7 @@ jobs:
       - name: Fetch tag
         id: set-latest-version
         run: |
-          go install github.com/ringsaturn/tzf/cmd/checkboundaryrelease@latest
+          go install github.com/ringsaturn/tzf/cmd/checkboundaryrelease@$TZF_CLI_TOOL_VERSION
 
           checkboundaryrelease >> $GITHUB_OUTPUT
 
@@ -51,10 +54,10 @@ jobs:
       - name: Produce
         shell: bash
         run: |
-          go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@latest
-          go install github.com/ringsaturn/tzf/cmd/reducetzpb@latest
-          go install github.com/ringsaturn/tzf/cmd/compresstzpb@latest
-          go install github.com/ringsaturn/tzf/cmd/preindextzpb@latest
+          go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@$TZF_CLI_TOOL_VERSION
+          go install github.com/ringsaturn/tzf/cmd/reducetzpb@$TZF_CLI_TOOL_VERSION
+          go install github.com/ringsaturn/tzf/cmd/compresstzpb@$TZF_CLI_TOOL_VERSION
+          go install github.com/ringsaturn/tzf/cmd/preindextzpb@$TZF_CLI_TOOL_VERSION
 
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
