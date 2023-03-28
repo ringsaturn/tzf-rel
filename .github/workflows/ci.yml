@@ -28,11 +28,14 @@ jobs:
           go install github.com/ringsaturn/tzf/cmd/compresstzpb@afde55199e728a8c662c96a3898160fde2589319
           go install github.com/ringsaturn/tzf/cmd/preindextzpb@afde55199e728a8c662c96a3898160fde2589319
 
-      - name: Try make new data
+      - name: Fetch tag
         id: set-latest-version
         run: |
           checkboundaryrelease -verbose=true
           checkboundaryrelease >> $GITHUB_OUTPUT
+
+      - name: "Check if continue"
+        run: if [ -z "${TIMEZONE_BOUNDARY_VERSION}" ] ; then echo "No need to gen!" ; exit 1 ; fi
 
       - name: "Download"
         run: |
