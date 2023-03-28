@@ -35,7 +35,7 @@ jobs:
           echo TIMEZONE_BOUNDARY_VERSION=checkboundaryrelease >> $GITHUB_ENV
 
       - name: "Check if continue"
-        if: (${{ env.TIMEZONE_BOUNDARY_VERSION }} == '')
+        if: $(TIMEZONE_BOUNDARY_VERSION) == ''
         run: |
           echo "No need to gen!"
           exit 1
