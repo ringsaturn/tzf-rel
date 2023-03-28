@@ -25,7 +25,7 @@ jobs:
       - name: Fetch tag
         id: set-latest-version
         run: |
-          go install github.com/ringsaturn/tzf/cmd/checkboundaryrelease
+          go install github.com/ringsaturn/tzf/cmd/checkboundaryrelease@latest
 
           checkboundaryrelease >> $GITHUB_OUTPUT
 
@@ -50,10 +50,10 @@ jobs:
       - name: Produce
         shell: bash
         run: |
-          go install github.com/ringsaturn/tzf/cmd/geojson2tzpb
-          go install github.com/ringsaturn/tzf/cmd/reducetzpb
-          go install github.com/ringsaturn/tzf/cmd/compresstzpb
-          go install github.com/ringsaturn/tzf/cmd/preindextzpb
+          go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@latest
+          go install github.com/ringsaturn/tzf/cmd/reducetzpb@latest
+          go install github.com/ringsaturn/tzf/cmd/compresstzpb@latest
+          go install github.com/ringsaturn/tzf/cmd/preindextzpb@latest
 
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
           preindextzpb combined-with-oceans.reduce.pb
