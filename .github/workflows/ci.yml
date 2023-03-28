@@ -1,0 +1,83 @@
+name: build-tzpb
+
+on:
+  schedule:
+    - cron: "1 * * * *"
+  workflow_dispatch:
+
+env:
+  TZF_CLI_TOOL_VERSION: "v0.13.1-rc1"
+
+jobs:
+  build-tzpb-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+
+      - name: Fetch tag
+        id: set-latest-version
+        run: |
+          go install github.com/ringsaturn/tzf/cmd/checkboundaryrelease@$TZF_CLI_TOOL_VERSION
+
+          checkboundaryrelease >> $GITHUB_OUTPUT
+
+      - name: Set env
+        run: |
+          echo TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }} >> $GITHUB_ENV
+
+      - name: Check if continue
+        shell: bash
+        run: |
+          if [ "$TIMEZONE_BOUNDARY_VERSION" == "" ]; then
+            echo "No need to gen!"
+            exit 0
+          fi
+
+      - name: Download
+        shell: bash
+        run: |
+          wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$TIMEZONE_BOUNDARY_VERSION/timezones-with-oceans.geojson.zip
+          unzip timezones-with-oceans.geojson.zip
+
+      - name: Produce
+        shell: bash
+        run: |
+          go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@$TZF_CLI_TOOL_VERSION
+          go install github.com/ringsaturn/tzf/cmd/reducetzpb@$TZF_CLI_TOOL_VERSION
+          go install github.com/ringsaturn/tzf/cmd/compresstzpb@$TZF_CLI_TOOL_VERSION
+          go install github.com/ringsaturn/tzf/cmd/preindextzpb@$TZF_CLI_TOOL_VERSION
+
+          geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
+          preindextzpb combined-with-oceans.reduce.pb
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "tzpb"
+          path: "./*.pb"
+
+      - name: "Commit"
+        shell: bash
+        run: |
+          git checkout -b bump-$TIMEZONE_BOUNDARY_VERSION
+          git add combined-with-oceans.pb
+          git add combined-with-oceans.reduce.pb
+          git add combined-with-oceans.reduce.compress.pb
+          git add combined-with-oceans.reduce.preindex.pb
+
+          git config --global user.name "tzf-auto-build-bot"
+          git config --global user.email "ringsaturn@users.noreply.github.com"
+          git commit -m "bump to $TIMEZONE_BOUNDARY_VERSION"
+
+      - name: "Push Commit"
+        shell: bash
+        run: |
+          git push --set-upstream origin bump-$TIMEZONE_BOUNDARY_VERSION
