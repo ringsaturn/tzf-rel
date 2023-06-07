@@ -1,8 +1,12 @@
 # [tzf](https://github.com/ringsaturn/tzf)'s preprocessed timezone data
 
+![](https://img.shields.io/github/v/release/ringsaturn/tzf-rel?style=plastic)
+
 ## Update Data Steps
 
-Data build in [Actions](.github/workflows/ci.yml).
+### CI
+
+Data build in [GitHub Actions](.github/workflows/ci.yml).
 
 ### Local build
 
@@ -37,7 +41,7 @@ geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
 preindextzpb combined-with-oceans.reduce.pb
 ```
 
-## Refer
+## References
 
 - Protocol Buffers define:
   <https://github.com/ringsaturn/tzf/blob/main/pb/tzinfo.proto>
@@ -50,7 +54,6 @@ preindextzpb combined-with-oceans.reduce.pb
 - To view data in GeoJSON format(which is more convenient to show on map), see
   <https://github.com/ringsaturn/tzf-server>
 
-Usage:
-
-- Go: <https://github.com/ringsaturn/tzf>
-- Rust: <https://github.com/ringsaturn/tzf-rs>
+- Data Usage examples
+  - Go: <https://github.com/ringsaturn/tzf>
+  - Rust: <https://github.com/ringsaturn/tzf-rs>
