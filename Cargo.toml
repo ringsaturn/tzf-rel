@@ -2,11 +2,11 @@
 name = "tzf-rel"
 version = "0.0.2023-b"
 edition = "2021"
-license-file = "LICENSE"
+license = "ODbL"
 description = "Probuf based binary timezone data distribution for tzf-rs"
-homepage = "http://github.com/ringsaturn/tzf-rel"
-documentation = "http://github.com/ringsaturn/tzf-rel"
-repository = "http://github.com/ringsaturn/tzf-rel"
+homepage = "https://github.com/ringsaturn/tzf-rel"
+documentation = "https://github.com/ringsaturn/tzf-rel"
+repository = "https://github.com/ringsaturn/tzf-rel"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
