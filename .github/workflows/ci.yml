@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  TZF_CLI_TOOL_VERSION: "v0.13.1-rc1"
+  TZF_CLI_TOOL_VERSION: "v0.14.0"
 
 jobs:
   build-tzpb-pipeline:
