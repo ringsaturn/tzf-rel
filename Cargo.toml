@@ -1,8 +1,8 @@
 [package]
 name = "tzf-rel"
-version = "0.0.2023-b"
+version = "0.0.2023-d"
 edition = "2021"
-license = "ODbL"
+license = "ODbL-1.0"
 description = "Probuf based binary timezone data distribution for tzf-rs"
 homepage = "https://github.com/ringsaturn/tzf-rel"
 documentation = "https://github.com/ringsaturn/tzf-rel"
