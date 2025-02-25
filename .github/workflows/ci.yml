@@ -56,22 +56,22 @@ jobs:
           go install github.com/ringsaturn/tzf/cmd/preindextzpb@$TZF_CLI_TOOL_VERSION
 
           geojson2tzpb combined-with-oceans.json | xargs reducetzpb | xargs compresstzpb
-          preindextzpb combined-with-oceans.reduce.pb
+          preindextzpb combined-with-oceans.reduce.bin
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: "tzpb"
-          path: "./*.pb"
+          path: "./*.bin"
 
       - name: "Commit"
         shell: bash
         run: |
           git checkout -b bump-$TIMEZONE_BOUNDARY_VERSION
-          git add combined-with-oceans.pb
-          git add combined-with-oceans.reduce.pb
-          git add combined-with-oceans.reduce.compress.pb
-          git add combined-with-oceans.reduce.preindex.pb
+          git add combined-with-oceans.bin
+          git add combined-with-oceans.reduce.bin
+          git add combined-with-oceans.reduce.compress.bin
+          git add combined-with-oceans.reduce.preindex.bin
 
           git config --global user.name "tzf-auto-build-bot"
           git config --global user.email "ringsaturn@users.noreply.github.com"
