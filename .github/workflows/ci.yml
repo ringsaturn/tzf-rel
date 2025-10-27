@@ -60,7 +60,7 @@ jobs:
           preindextzpb combined-with-oceans.reduce.bin
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: "tzpb"
           path: "./*.bin"
