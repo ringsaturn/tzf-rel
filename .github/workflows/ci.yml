@@ -30,25 +30,30 @@ jobs:
 
           checkboundaryrelease >> $GITHUB_OUTPUT
 
-      - name: Set env
-        run: |
-          echo TIMEZONE_BOUNDARY_VERSION=${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }} >> $GITHUB_ENV
-
-      - name: Check if continue
+      - name: Set env and check if continue
+        id: check-update
         shell: bash
         run: |
-          if [ "$TIMEZONE_BOUNDARY_VERSION" == "" ]; then
-            echo "No need to gen!"
-            exit 0
+          VERSION="${{ steps.set-latest-version.outputs.TIMEZONE_BOUNDARY_VERSION }}"
+          echo "TIMEZONE_BOUNDARY_VERSION=$VERSION" >> $GITHUB_ENV
+          
+          if [ -z "$VERSION" ]; then
+            echo "No new version detected. Skipping build."
+            echo "should_continue=false" >> $GITHUB_OUTPUT
+          else
+            echo "New version detected: $VERSION"
+            echo "should_continue=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Download
+        if: steps.check-update.outputs.should_continue == 'true'
         shell: bash
         run: |
           wget https://github.com/evansiroky/timezone-boundary-builder/releases/download/$TIMEZONE_BOUNDARY_VERSION/timezones-with-oceans.geojson.zip
           unzip timezones-with-oceans.geojson.zip
 
       - name: Produce
+        if: steps.check-update.outputs.should_continue == 'true'
         shell: bash
         run: |
           go install github.com/ringsaturn/tzf/cmd/geojson2tzpb@$TZF_CLI_TOOL_VERSION
@@ -60,12 +65,14 @@ jobs:
           preindextzpb combined-with-oceans.reduce.bin
 
       - name: Upload a Build Artifact
+        if: steps.check-update.outputs.should_continue == 'true'
         uses: actions/upload-artifact@v5
         with:
           name: "tzpb"
           path: "./*.bin"
 
       - name: "Commit"
+        if: steps.check-update.outputs.should_continue == 'true'
         shell: bash
         run: |
           git checkout -b auto-bump-$TIMEZONE_BOUNDARY_VERSION
@@ -79,11 +86,13 @@ jobs:
           git commit -m "bump to $TIMEZONE_BOUNDARY_VERSION"
 
       - name: "Push Commit"
+        if: steps.check-update.outputs.should_continue == 'true'
         shell: bash
         run: |
           git push --set-upstream origin auto-bump-$TIMEZONE_BOUNDARY_VERSION
 
       - name: "Create Pull Request"
+        if: steps.check-update.outputs.should_continue == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
