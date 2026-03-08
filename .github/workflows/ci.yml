@@ -17,6 +17,8 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v6
@@ -73,7 +75,7 @@ jobs:
           path: "./*.bin"
 
       - name: "Create Pull Request"
-        if: steps.check-update.outputs.should_continue == 'true'
+        if: steps.check-update.outputs.should_continue == 'true' && github.ref_name == github.event.repository.default_branch
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
