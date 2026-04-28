@@ -1,3 +1,5 @@
+#![deprecated(note = "This crate is deprecated and no longer maintained.")]
+
 // pub fn load_full() -> Vec<u8> {
 //     include_bytes!("../combined-with-oceans.bin").to_vec()
 // }

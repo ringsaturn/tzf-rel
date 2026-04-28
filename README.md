@@ -1,5 +1,9 @@
 # [tzf](https://github.com/ringsaturn/tzf)'s preprocessed timezone data
 
+> [!WARNING]
+> Deprecated: This project is deprecated and no longer maintained.
+> Please see https://github.com/ringsaturn/tzf for latest timezone data and tools.
+
 ![](https://img.shields.io/github/v/release/ringsaturn/tzf-rel?style=plastic)
 
 ## Update Data Steps
